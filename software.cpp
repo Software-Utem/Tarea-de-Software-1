@@ -2,10 +2,12 @@
 #include <iostream>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
+#define _TIME_
 
 
 #include <gd.h>
-#include <dfonts.h>
+#include <gdfonts.h>
 #include "comun.h"
 #include "utils.h"
 
@@ -24,7 +26,7 @@ typedef struct Retail
 	float Monto;
 };
 
-void graficar(StringN nombre,float monto) {
+void graficar(StringN nombre,float monto, int cont) {
 
     gdImagePtr imagen;
     FILE *archivo;
@@ -37,7 +39,7 @@ void graficar(StringN nombre,float monto) {
     int y = 0;
     int mes = 0;
     int alto = 50;
-    int ancho = 70;
+    int ancho = 120;
     long maximo = 0;
     long paso = 0;
     double porcentaje = 0.0;
@@ -52,20 +54,17 @@ void graficar(StringN nombre,float monto) {
 
         // Coloco el título
         memset(titulo, 0, 513);
-        snprintf(titulo, 512, "Ventas tienda %s", nombre);
+        snprintf(titulo, 512, "VENTAS TIENDA %s:", nombre);
         gdImageString(imagen, fuente, (int) IMG_WIDTH * 0.4, 25, (unsigned char *) titulo, negro);
 
-        
-           
 
             // El alto máximo serán 500px que será el 100%
             alto = (int) (450 * porcentaje);
 
 
-            // Monto
-            gdImageString(imagen, fuente, ancho, IMG_HEIGHT - (BORDE_ALTO + alto + 20), (unsigned char *) longStr(monto), color);
-            ancho += 55;
-
+        // Monto
+         gdImageString(imagen, fuente, ancho, IMG_HEIGHT - (BORDE_ALTO + alto + 60), (unsigned char *) longStr(monto), color);
+         ancho += 75;
 
 
         // Pintamos Borde
@@ -74,20 +73,53 @@ void graficar(StringN nombre,float monto) {
         gdImageLine(imagen, BORDE_ANCHO, BORDE_ALTO, BORDE_ANCHO, (IMG_HEIGHT - BORDE_ALTO), negro);
         gdImageLine(imagen, (IMG_WIDTH - BORDE_ANCHO), BORDE_ALTO, (IMG_WIDTH - BORDE_ANCHO), (IMG_HEIGHT - BORDE_ALTO), negro);
 
+          
 
         // Guardar imagen
-        archivo = fopen("grafico.jpg", "wb");
-        if (archivo != NULL) {
+        if(cont == 0)
+	{
+            archivo = fopen("grafico1.jpg", "wb");
+	    if (archivo != NULL) {
             gdImageJpeg(imagen, archivo, 100);
             fclose(archivo);
+            }
         }
+	if(cont == 1)
+	{
+            archivo = fopen("grafico2.jpg", "wb");
+	    if (archivo != NULL) {
+            gdImageJpeg(imagen, archivo, 100);
+            fclose(archivo);
+            }
+        }
+	if(cont == 2)
+	{
+            archivo = fopen("grafico3.jpg", "wb");
+	    if (archivo != NULL) {
+            gdImageJpeg(imagen, archivo, 100);
+            fclose(archivo);
+            }
+	}
+	if(cont == 3)
+	{
+            archivo = fopen("grafico4.jpg", "wb");
+	    if (archivo != NULL) {
+            gdImageJpeg(imagen, archivo, 100);
+            fclose(archivo);
+            }
+	}
+
+        /*if (archivo != NULL) {
+            gdImageJpeg(imagen, archivo, 100);
+            fclose(archivo);
+        }*/
         gdImageDestroy(imagen);
     }
 }
 
 
 
-void calcularM (StringN Nombre,StringF FechaI, StringF FechaT)
+void calcularM (StringN Nombre,StringF FechaI, StringF FechaT,int cont)
 {
     int i=0;
     long  acum=0; 
@@ -120,9 +152,9 @@ void calcularM (StringN Nombre,StringF FechaI, StringF FechaT)
                 
                 if(strcmp(FechaT,token)==0)//pregunta si es el termino final por lo que avanza y guardara el ultimo monto y lo mostrara por pantalla
 		        {     
-                    token = strtok(NULL,"\";");//tercer avance valor hora 
-                    token = strtok(NULL,"\";");//cuarto avance correspondiente al monto
+                   
                      x=1; 
+                     graficar(vNombre[i].sNombre,acum,cont);
                      cout<<"\nMONTO ACUMULADO: "<<acum<<endl; 
                                    
                 } 
@@ -143,80 +175,45 @@ void calcularM (StringN Nombre,StringF FechaI, StringF FechaT)
    
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     StringN nombre;
     StringF fechai;
     StringF fechat;
-    int op;
-    while(op!=4)
-    {  
-		system("cls");
-		cout << "\n\t\t MENU\n";
-		cout << "\nGENERAR SUMA DE VENTAS DE LA TIENDA:\n";
-		cout << "\t 1. CencoSux \n";
-		cout << "\t 2. Falaferia \n";
-		cout << "\t 3. Porahi \n";
-		cout << "\t 4. Replay \n";
-		cout << "\t 5. Salir                          \n";
-		cout << "\t Ingrese opcion: ";
-		cin>>op;
-		if(op==1 || op==2 || op ==3 || op==4 || op==5)
-		{
-			if(op==1)
-			{
-				cout<<"Ingrese fecha inicio"<<endl;
-				fgets(fechai,20,stdin);
-				cin>>fechai;
-				cout<<"la fecha de inicio es:"<<fechai<<endl;
-				cout<<"ingrese fecha de termino "<<endl;
-				cin>>fechat;
-				cout<<"la fecha de termino es:"<<fechat<<endl;
-				calcularM("CencoSux",fechai,fechat);
-			}
-			if(op==2)
-			{
-				/*cout<<"Ingrese fecha inicio"<<endl;
-				cin>>fechai;
-				cout<<"la fecha de inicio es:"<<fechai<<endl;
-				cout<<"ingrese fecha de termino "<<endl;
-				cin>>fechat;
-				cout<<"la fecha de termino es:"<<fechat<<endl;
-				calcularM("Falaferia",fechai,fechat);*/
-				//calcularM("Falaferia","2013-01-01 00:12:33","2013-01-01 00:49:02");
-				calcularM("Falaferia","2013-01-01","2013-01-04");
-			}
-			if(op==3)
-			{
-				cout<<"Ingrese fecha inicio"<<endl;
-				cin>>fechai;
-				cout<<"la fecha de inicio es:"<<fechai<<endl;
-				cout<<"ingrese fecha de termino "<<endl;
-				cin>>fechat;
-				cout<<"la fecha de termino es:"<<fechat<<endl;
-				calcularM("Porahi",fechai,fechat);         
-			}
-			if(op==4)
-            {
-				cout<<"Ingrese fecha inicio"<<endl;
-				cin>>fechai;
-				cout<<"la fecha de inicio es:"<<fechai<<endl;
-				cout<<"ingrese fecha de termino "<<endl;
-				cin>>fechat;
-				cout<<"la fecha de termino es:"<<fechat<<endl;
-				calcularM("Replay",fechai,fechat); 
-			}
-			if(op==5)
-            {
-				exit(0);
-			}
-			system("pause");
-		}
-		else
-        {
-			cout<<"\n\tOpcion Incorrecta \n";
-			system("pause");
-	    }
+    int op, entrada=0, i;
+
+    for (i = 0; i < argc ; i++)
+    {
+        if(strcmp(argv[i],"-g")==0) entrada = 1;
+        if(strcmp(argv[i],"-v")==0) entrada = 2;
+    }
+
+if(entrada == 1)
+{
+    /*for(size_t i = 0; i < argc; i++)
+    {
+        cout << i << " " << argv[i] << endl;
+    }*/
+
+
+    //cout<<"Ingrese fecha inicio:"<<endl;
+    //cin>>fechai;
+    //cout<<"Ingrese fecha de termino:"<<endl;
+    //cin>>fechat;
+    calcularM("CencoSux",argv[2],argv[3],0);
+    calcularM("Falaferia",argv[2],argv[3],1);
+    calcularM("Porahi",argv[2],argv[3],2);        
+    calcularM("Replay",argv[2],argv[3],3);
+}
+
+else
+{
+	if(entrada == 2)
+	{
+ 		cout<<"\nIntegrantes:\n\nDamaris Avila\nNicolas Rodriguez\nBarbara Rojas\n\n"<<endl;
+ 		cout<<"Fecha de compilacion: "<<endl;
+        	puts(__DATE__); //Fecha de compilacion.
 	}
+}			
     system("pause");
 }
